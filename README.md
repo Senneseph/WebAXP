@@ -1,57 +1,64 @@
-# WebAXP - WebAX Progressive Web App Framework
+# WebAXP — Web Application Experience Package
 
-WebAXP is the official implementation of the WebAX architecture for building Progressive Web Applications (PWAs). It provides a comprehensive framework for creating modern, performant, and accessible web applications using the WebAX ecosystem.
+WebAXP is the **packaging format** for WebAX applications. It defines how a WebAX app is bundled, versioned, described, and referenced so that it can be installed and run in any standards-compliant browser.
+
+> **Note:** WebAXP is *not* the application framework. The framework (Business Logic Controller + UI component library) is **jcule** + **jellicule**, unified under the **WebAX** umbrella. WebAXP is only the package that wraps a finished app for distribution.
 
 ## Overview
 
-WebAXP combines the power of jcule (Business Logic Controller) and jellicule (UI Component Library) to create a complete framework for building web applications. It follows the WebAX architecture principles of separation of concerns, declarative UI-to-API mapping, event-based communication, multi-tab support, and state synchronization.
+A WebAXP package is a **bundle** (a directory) plus a **manifest** that describes it. The package is produced from a WebAX app's build output and consumed by the distribution layer (**WebAXD**) and, ultimately, the distribution network (**WebAXPDN**).
 
-## Key Features
+## Package contents
 
-- **Progressive Web App Support**: Built-in PWA capabilities for offline support, installability, and native-like experiences
-- **API-First Development**: Generate UIs directly from API specifications
-- **Component-Based Architecture**: Reusable, accessible, and customizable UI components
-- **State Management**: Centralized state management with multi-tab synchronization
-- **Routing**: Declarative routing with code splitting and lazy loading
-- **Offline Support**: Work offline and synchronize when back online
-- **TypeScript Support**: Full TypeScript support for type safety and developer experience
-- **Accessibility**: Built-in accessibility features and best practices
-- **Performance**: Optimized for performance with code splitting, tree shaking, and lazy loading
+A WebAXP bundle contains:
 
-## Getting Started
+- `index.html` — entry point
+- `manifest.json` — PWA manifest with the `webax` extension field
+- `app.js`, `styles.css`, and other core assets
+- `service-worker.js` — offline support
 
-To create a new WebAXP application, use the WebAXP CLI:
+## The `webax` manifest field
 
-```bash
-npm install -g @net.webax/webaxp-cli
-webaxp create my-app
-cd my-app
-npm start
+A WebAX app's PWA manifest carries a `webax` extension describing the package:
+
+```json
+{
+  "name": "Example App",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "webax": {
+    "version": "1.0.0",
+    "publisher": "example.com",
+    "package_id": "example-app",
+    "permissions": ["storage", "network", "notifications"],
+    "services": ["postgres", "ollama"],
+    "distribution": {
+      "webtorrent": "magnet:?xt=urn:btih:...",
+      "archive": "https://example.com/example-app.zip",
+      "repo": "https://github.com/example/example-app.git"
+    }
+  }
+}
 ```
 
-## Documentation
+## Distribution references
 
-- [Conventions](./docs/conventions/README.md): Coding conventions, file structure, and naming conventions
-- [Specifications](./docs/specifications/README.md): Detailed specifications for WebAXP
-- [Examples](./docs/examples/README.md): Example applications built with WebAXP
+A WebAXP package can be referenced three ways:
 
-## Packages
+- **WebTorrent** — a magnet URI for P2P sharing.
+- **Archive** — a `.zip` of the bundle.
+- **Repository** — a Git URL for source access.
 
-WebAXP consists of several packages:
+## Relationship to the rest of the ecosystem
 
-- **@net.webax/jcule**: Business Logic Controller for WebAX applications
-- **@net.webax/jellicule**: UI Component Library for WebAX applications
-- **@net.webax/webaxp-cli**: Command-line interface for creating and managing WebAXP applications
-- **@net.webax/webaxp-core**: Core functionality for WebAXP applications
-- **@net.webax/webaxp-router**: Routing for WebAXP applications
-- **@net.webax/webaxp-state**: State management for WebAXP applications
-- **@net.webax/webaxp-api**: API integration for WebAXP applications
-- **@net.webax/webaxp-pwa**: PWA features for WebAXP applications
+- **WebAXP** = the package *format* (this project).
+- **WebAXD** = the distribution *layer* that moves packages (direct / P2P / distributed).
+- **WebAXPDN** = the P2P distribution *network* built on WebAXD.
 
-## Contributing
+## Status
 
-Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
+Packaging format specification — in progress. See [`WebAX/docs/webaxp-format.md`](../WebAX/docs/webaxp-format.md) for details.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+MIT
